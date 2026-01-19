@@ -178,6 +178,29 @@ const App = () => {
     const [priceMode30, setPriceMode30] = useState('individu'); // individu | invite
     const [priceMode90, setPriceMode90] = useState('invite'); // DEFAULT set to 'invite' as requested
 
+    // Fungsi handle klik WhatsApp
+    const handlePurchase = (packageType, mode, price) => {
+        const phoneNumber = "6285179852558";
+        let message = "";
+
+        if (packageType === "30") {
+            if (mode === "individu") {
+                message = "Halo Admin, saya ingin membeli Paket Starter 30 Hari (Individu) seharga Rp98.000.";
+            } else {
+                message = "Halo Admin, saya ingin klaim promo Paket Starter 30 Hari (Invite Teman) seharga Rp35.000.";
+            }
+        } else if (packageType === "90") {
+            if (mode === "individu") {
+                message = "Halo Admin, saya ingin membeli Paket Pro 90 Hari (Individu) seharga Rp290.000.";
+            } else {
+                message = "Halo Admin, saya ingin klaim promo Paket Pro 90 Hari (Invite 3 Teman) seharga Rp97.000.";
+            }
+        }
+
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    };
+
     // FAQ Data
     const faqs = [
         {
@@ -421,7 +444,10 @@ const App = () => {
                                     )}
                                 </div>
 
-                                <button className={`w-full py-3 rounded-xl border font-semibold transition-colors ${priceMode30 === 'invite' ? 'bg-cyan-500 border-cyan-500 text-black hover:bg-cyan-400' : 'border-gray-600 hover:bg-gray-800'}`}>
+                                <button 
+                                    onClick={() => handlePurchase("30", priceMode30)}
+                                    className={`w-full py-3 rounded-xl border font-semibold transition-colors ${priceMode30 === 'invite' ? 'bg-cyan-500 border-cyan-500 text-black hover:bg-cyan-400' : 'border-gray-600 hover:bg-gray-800'}`}
+                                >
                                     Pilih Paket 30 Hari
                                 </button>
                             </div>
@@ -480,6 +506,7 @@ const App = () => {
                                     </div>
 
                                     <button 
+                                        onClick={() => handlePurchase("90", priceMode90)}
                                         className={`w-full py-3 rounded-xl font-bold transition-all transform hover:-translate-y-1 ${priceMode90 === 'invite' ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:shadow-lg hover:shadow-orange-500/25' : 'border border-gray-600 text-white hover:bg-gray-800 font-semibold'}`}
                                     >
                                         {priceMode90 === 'invite' ? 'Ambil Promo 90 Hari' : 'Pilih Paket 90 Hari'}
@@ -528,7 +555,8 @@ const App = () => {
 
 // Sub-Component untuk Item FAQ agar kode lebih rapi
 const FAQItem = ({ question, answer, index }) => {
-    const [isOpen, setIsOpen] = useState(index === 0); // Buka yang pertama secara default
+    // Diubah menjadi false agar defaultnya tertutup semua
+    const [isOpen, setIsOpen] = useState(false); 
 
     return (
         <Reveal delay={index * 100}>
