@@ -10,7 +10,7 @@ const featuredAppsList = [
 
 // Database Aplikasi lengkap
 const allApps = [
-    // Unggulan (Akan dirender duluan atau dengan style khusus)
+    // Unggulan
     { name: "ChatGPT Pro", url: "https://groupy.id/assets/images/services/chatgptpro.png" },
     { name: "Gemini AI Ultra", url: "https://groupy.id/assets/images/services/gemini_ultra.png" },
     { name: "ResearchRabbit Pro", url: "https://pbs.twimg.com/profile_images/1983772825812189184/IXDTOqLX.jpg" },
@@ -21,7 +21,7 @@ const allApps = [
     { name: "Netflix", url: "https://groupy.id/assets/images/services/netflix.png" },
     { name: "Studocu", url: "https://play-lh.googleusercontent.com/20ssDWF3SWEXIFYy8iFwXjomuIqtuHjGc3OxIWqVojIaeo_9_XxUZEDdmm5YPreLucij" },
     
-    // Sisa Aplikasi
+    // Sisa Aplikasi (Akan disortir A-Z nanti)
     { name: "Academia", url: "https://play-lh.googleusercontent.com/EpJMVmU4FP-cAyb_KwiFohiqBL24XVtomMMQPeFKxODrunPVdqr2IYRlARJNVjIiIWQ" },
     { name: "Alight Motion", url: "https://play-lh.googleusercontent.com/OU0BlP8C9-V7ECl2crma7B48nzDbK7liSLjn0j_fpTlyWG6qyEE-mw_KFZ9aOXF0a3w" },
     { name: "Apple Music", url: "https://play-lh.googleusercontent.com/mOkjjo5Rzcpk7BsHrsLWnqVadUK1FlLd2-UlQvYkLL4E9A0LpyODNIQinXPfUMjUrbE" },
@@ -150,9 +150,9 @@ function useOnScreen(ref, rootMargin = "0px") {
 }
 
 // Komponen Reveal untuk animasi
-const Reveal = ({ children, delay = 0, className = "" }) => {
+const Reveal = ({ children, delay = 0, className = "", rootMargin = "-50px" }) => {
     const ref = useRef(null);
-    const isVisible = useOnScreen(ref, "-50px");
+    const isVisible = useOnScreen(ref, rootMargin);
 
     return (
         <div 
@@ -176,7 +176,16 @@ const App = () => {
 
     // State untuk Paket
     const [priceMode30, setPriceMode30] = useState('individu'); // individu | invite
-    const [priceMode90, setPriceMode90] = useState('invite'); // DEFAULT set to 'invite' as requested
+    const [priceMode90, setPriceMode90] = useState('invite'); // DEFAULT set to 'invite'
+
+    // SORTING APLIKASI
+    // 1. Pisahkan Featured dan Non-Featured
+    const featuredApps = allApps.filter(app => featuredAppsList.includes(app.name));
+    
+    // 2. Sortir Non-Featured secara A-Z
+    const nonFeaturedApps = allApps
+        .filter(app => !featuredAppsList.includes(app.name))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
     // Fungsi handle klik WhatsApp
     const handlePurchase = (packageType, mode, price) => {
@@ -187,13 +196,13 @@ const App = () => {
             if (mode === "individu") {
                 message = "Halo Admin, saya ingin membeli Paket Starter 30 Hari (Individu) seharga Rp98.000.";
             } else {
-                message = "Halo Admin, saya ingin klaim promo Paket Starter 30 Hari (Invite Teman) seharga Rp35.000.";
+                message = "Halo Admin, saya ingin klaim promo Paket Starter 30 Hari (Wajib Invite 3 Teman) seharga Rp35.000.";
             }
         } else if (packageType === "90") {
             if (mode === "individu") {
                 message = "Halo Admin, saya ingin membeli Paket Pro 90 Hari (Individu) seharga Rp290.000.";
             } else {
-                message = "Halo Admin, saya ingin klaim promo Paket Pro 90 Hari (Invite 3 Teman) seharga Rp97.000.";
+                message = "Halo Admin, saya ingin klaim promo Paket Pro 90 Hari (Wajib Invite 3 Teman) seharga Rp97.000.";
             }
         }
 
@@ -322,11 +331,12 @@ const App = () => {
                     </Reveal>
                     
                     {/* Grid Container */}
-                    <div className="grid grid-cols-3 md:grid-cols-12 gap-3 md:gap-4">
+                    {/* UPDATED GRID: Mobile 3 cols, Tablet (md) 5 cols, Desktop (lg) 12 cols */}
+                    <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-12 gap-3 md:gap-4">
                         
-                        {/* 1. Render Featured Apps (Unggulan) First with Diamond Blue Glow (70% opacity) */}
-                        {allApps.filter(app => featuredAppsList.includes(app.name)).map((app, index) => (
-                             <Reveal key={`featured-${index}`} delay={index * 50} className="col-span-1">
+                        {/* 1. Render Featured Apps (Unggulan) First with Diamond Blue Glow */}
+                        {featuredApps.map((app, index) => (
+                             <Reveal key={`featured-${index}`} delay={index * 50} className="col-span-1" rootMargin="1000px">
                                 <div className="group relative aspect-square rounded-2xl p-[2px] bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 shadow-lg shadow-cyan-500/70 overflow-hidden hover:scale-105 transition-transform duration-300">
                                     {/* Shine effect */}
                                     <div className="absolute inset-0 bg-white/30 skew-x-12 -translate-x-full group-hover:animate-shine z-20"></div>
@@ -345,7 +355,7 @@ const App = () => {
                                                 onError={(e) => {e.target.src = 'https://via.placeholder.com/100?text=App'}}
                                             />
                                         </div>
-                                        {/* Container Text with Better Padding and Line Height */}
+                                        {/* Container Text */}
                                         <div className="w-full mt-1 min-h-[24px] flex items-center justify-center px-1 pb-1">
                                             <p className="text-[10px] md:text-xs font-semibold text-center text-cyan-50 leading-tight w-full break-words">
                                                 {app.name}
@@ -356,16 +366,15 @@ const App = () => {
                             </Reveal>
                         ))}
 
-                        {/* 2. Render Remaining Apps - Color Enabled by Default */}
-                        {allApps.filter(app => !featuredAppsList.includes(app.name)).map((app, index) => (
-                            <Reveal key={`std-${index}`} delay={(index + 9) * 30} className="col-span-1">
+                        {/* 2. Render Remaining Apps (SORTED A-Z) */}
+                        {nonFeaturedApps.map((app, index) => (
+                            <Reveal key={`std-${index}`} delay={(index + 9) * 30} className="col-span-1" rootMargin="1000px">
                                 <div className="group h-full aspect-square bg-gray-900 border border-gray-800 hover:border-gray-600 rounded-xl flex flex-col items-center justify-between p-2 transition-all duration-300 hover:bg-gray-800 hover:shadow-xl">
                                      <div className="flex-grow flex items-center justify-center w-full">
                                         <img 
                                             src={app.url} 
                                             alt={app.name} 
                                             loading="lazy"
-                                            // Removed grayscale class as requested
                                             className="w-8 h-8 md:w-10 md:h-10 object-contain rounded-md transition-all duration-500"
                                             onError={(e) => {e.target.src = 'https://via.placeholder.com/100?text=App'}}
                                         />
@@ -426,7 +435,7 @@ const App = () => {
                                         onClick={() => setPriceMode30('invite')}
                                         className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${priceMode30 === 'invite' ? 'bg-cyan-900/50 text-cyan-400 shadow' : 'text-gray-500 hover:text-gray-300'}`}
                                     >
-                                        Invite Teman
+                                        Invite 3 Teman
                                     </button>
                                 </div>
 
@@ -439,7 +448,7 @@ const App = () => {
                                     ) : (
                                         <div className="animate-fade-in">
                                              <span className="text-3xl font-bold text-cyan-400">Rp35.000</span>
-                                             <div className="text-xs text-red-400 font-medium mt-1">*Wajib invite teman</div>
+                                             <div className="text-xs text-red-400 font-medium mt-1">*Wajib invite 3 teman</div>
                                         </div>
                                     )}
                                 </div>
