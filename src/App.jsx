@@ -351,7 +351,7 @@ const App = () => {
                                                 src={app.url} 
                                                 alt={app.name} 
                                                 loading="lazy"
-                                                className="w-10 h-10 md:w-12 md:h-12 object-contain rounded-lg"
+                                                className="w-14 h-14 md:w-16 md:h-16 object-contain rounded-lg"
                                                 onError={(e) => {e.target.src = 'https://via.placeholder.com/100?text=App'}}
                                             />
                                         </div>
@@ -375,7 +375,7 @@ const App = () => {
                                             src={app.url} 
                                             alt={app.name} 
                                             loading="lazy"
-                                            className="w-8 h-8 md:w-10 md:h-10 object-contain rounded-md transition-all duration-500"
+                                            className="w-12 h-12 md:w-14 md:h-14 object-contain rounded-md transition-all duration-500"
                                             onError={(e) => {e.target.src = 'https://via.placeholder.com/100?text=App'}}
                                         />
                                     </div>
